@@ -17,11 +17,9 @@ climate:
      {{ modes[value] if value in modes.keys() else 'off' }}
    mode_command_topic: "convert/modeset"
    current_temperature_topic: "temp/T7_Inlet"
-   current_temperature_template: >-
-    {{ value | float | multiply(0.01) | round(1) }}
-   min_temp: 16
-   max_temp: 28
-   temp_step: 0.5
+   min_temp: 15
+   max_temp: 30
+   temp_step: 1.0
    temperature_state_topic: "ventilation/control/TempSet"
    temperature_state_template: >-
     {{ value | float | multiply(0.01) | round(1) }}
