@@ -28,6 +28,7 @@ climate:
 automation:
 
 - alias: 'Convert HVAC Mode'
+  initial_state: 'on'
   hide_entity: true
   trigger:
     platform: mqtt
@@ -42,6 +43,7 @@ automation:
         {{ modes[mode_name] if mode_name in modes.keys() else '0' }}
 
 - alias: 'Convert HVAC Temperature'
+  initial_state: 'on'
   hide_entity: true
   trigger:
     platform: mqtt
