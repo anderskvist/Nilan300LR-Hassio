@@ -1,0 +1,97 @@
+climate:
+ - platform: mqtt
+   name: "Nilan Genvex"
+   optimistic: false
+   retain: false
+   qos: 0
+   payload_on: 1
+   payload_off: 0
+   modes:
+     - auto
+     - heat
+     - cool
+     - 'off'
+   mode_state_topic: "ventilation/control/ModeSet" 
+   mode_state_template: >-
+     {% set modes = { '0':'off', '1':'heat',  '2':'cool', '3':'auto'} %}
+     {{ modes[value] if value in modes.keys() else 'off' }}
+   mode_command_topic: "convert/modeset"
+   current_temperature_topic: "temp/T7_Inlet"
+   current_temperature_template: >-
+    {{ value | float | multiply(0.01) | round(1) }}
+   min_temp: 16
+   max_temp: 28
+   temp_step: 0.5
+   temperature_state_topic: "ventilation/control/TempSet"
+   temperature_state_template: >-
+    {{ value | float | multiply(0.01) | round(1) }}
+   temperature_command_topic: "convert/tempset"
+
+automation:
+
+- alias: 'Convert HVAC Mode'
+  hide_entity: true
+  trigger:
+    platform: mqtt
+    topic: convert/modeset
+  action:
+    service: mqtt.publish
+    data_template:
+      topic: "ventilation/modeset"
+      payload: >-
+        {% set mode_name = trigger.payload %}
+        {% set modes = { 'off':'0', 'heat':'1', 'cool':'2', 'auto':'3' } %}
+        {{ modes[mode_name] if mode_name in modes.keys() else '0' }}
+
+- alias: 'Convert HVAC Temperature'
+  hide_entity: true
+  trigger:
+    platform: mqtt
+    topic: convert/tempset
+  action:
+    service: mqtt.publish
+    data_template:
+      topic: "ventilation/tempset"
+      payload: "{{ trigger.payload | float | multiply(100) | round }}"   
+
+#################################
+###  Nilan Temp Sensorer      ###
+#################################    
+
+sensor:
+  - platform: mqtt
+    name: "Nilan Udendørs Temp"
+    state_topic: "temp/T8_Outdoor"
+    unit_of_measurement: "°C"
+    device_class: temperature
+
+  - platform: mqtt
+    name: "Nilan Indblæs Temp"
+    state_topic: "temp/T7_Inlet"
+    unit_of_measurement: "°C"
+    device_class: temperature
+  
+  - platform: mqtt
+    name: "Nilan Rum Temp"
+    state_topic: "temp/T15_Room"
+    unit_of_measurement: "°C"
+    device_class: temperature  
+
+  - platform: mqtt
+    name: "Nilan CTS602 Temp"
+    state_topic: "temp/T0_Controller"
+    unit_of_measurement: "°C"
+    device_class: temperature
+
+  - platform: mqtt
+    name: "Nilan Gennemsnitlig Rum Temp"
+    state_topic: "temp/T3_Exhaust"
+    unit_of_measurement: "°C"
+    device_class: temperature  
+        
+  - platform: mqtt
+    name: "Nilan Afkast Temp"
+    state_topic: "temp/T4_Outlet"
+    unit_of_measurement: "°C"
+    device_class: temperature  
+        
