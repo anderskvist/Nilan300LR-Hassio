@@ -1,39 +1,31 @@
+# NilanModbus
+
 @ All the credits for the code work on this goes to original designer Dan Gunvald.
 
 I have tried to make an attempt to make it work with Home Assistant instead of OpenHab, which it is originally designed for.
 
+When the setup of the ESP8266 and MODBUS interface is done, it is time for using it in Home Assistant together with MQTT.
 
 
 
-# NilanModbus
-Nilan ventilation cts 602 modbus communication
+Switch nilanrun ventilation/RunSet (ON uses payload 1) ventilation/RunSet  (OFF uses payload 0)
 
-Using http for reading register group:
-
-http://[device]/read/[group]
-
-Showing groups
-
-http://[device]/help 
-
-Setting value
-
-http://[device]/set/[group]/[address]/[value]
-
-
-Sends group temp(also includes RH) to mqqt server every 3. minute.
-
-Openhab items:
-
-Switch nilanrun {mqtt=">[my:ventilation/RunSet:command:ON:1],>[my:ventilation/RunSet:command:OFF:0]"}<br/>
 Number nilanrunstate {mqtt="<[my:ventilation/control/RunSet:state:REGEX(([0-9-]+))]"}<br/>
+
 Number nilanmode      {mqtt=">[my:ventilation/ModeSet:state:*:default]"}<br/>
+
 Number nilanmodestate {mqtt="<[my:ventilation/control/ModeSet:state:REGEX(([0-9-]+))]"}<br/>
+
 Number nilanvent      {mqtt=">[my:ventilation/VentSet:state:*:default]"}<br/>
+
 Number nilanventstate {mqtt="<[my:ventilation/control/VentSet:state:REGEX(([0-9-]+))]"}<br/>
+
 Number nilantemp {mqtt=">[my:ventilation/TempSet:state:*:REGEX(([0-9-]+))]"}<br/>
+
 Number nilantempstate {mqtt="<[my:ventilation/control/TempSet:state:REGEX(([0-9-]+))]"}<br/>
+
 Number nilaninlet "Ventilation indgang temp [%s]" {mqtt="<[my:temp/T7_Inlet:state:REGEX(.*?([0-9.]+).*]"}<br/>
+
 Number nilanoutside "Ventilation ude temp [%s]" {mqtt="<[my:temp/T8_Outdoor:state:REGEX(.*?([0-9.]+).*]"}<br/>
 
 
